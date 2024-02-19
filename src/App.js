@@ -1,23 +1,42 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState } from 'react';
 
 function App() {
+  const [phrase, setPhrase] = useState();
+  const [phraseList, setPhraseList] = useState([]);
+
+  function savePhrase(event) {
+    event.preventDefault();
+    if(phrase.length < 20) {
+      alert("Ops... phrases of less than 20 characters are not allowed.")
+      return
+    }
+
+    if(phraseList.includes(phrase)) {
+      alert("Duplicated phrases are not allowed.")
+      return
+    }
+    setPhraseList([...phraseList, phrase])
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <form onSubmit={savePhrase}>
+        <textarea
+          value={phrase}
+          onChange={event => setPhrase(event.target.value)}
+          required
+        />
+        <br />
+        <button>Save phrase</button>
+      </form>
+      {phraseList.map((currentPhrase, index) => {
+        return (
+          <blockquote key={index}>
+            <p>{currentPhrase}</p>
+          </blockquote>
+        )
+      })}
     </div>
   );
 }
