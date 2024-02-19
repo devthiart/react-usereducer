@@ -1,22 +1,26 @@
 import './App.css';
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
+import reducer, { ADD_PHRASE, DELETE_PHRASE } from './reducer';
 
 function App() {
   const [phrase, setPhrase] = useState();
-  const [phraseList, setPhraseList] = useState([]);
+  // const [phraseList, setPhraseList] = useState([]);
+  const [phraseList, dispatch] = useReducer(reducer, []); // phraseList = state (./reducer.js)
 
   function savePhrase(event) {
     event.preventDefault();
-    if(phrase.length < 20) {
-      alert("Ops... phrases of less than 20 characters are not allowed.")
-      return
-    }
+    //setPhraseList([...phraseList, phrase])
+    dispatch({
+      type: ADD_PHRASE,
+      phrase: phrase
+    })
+  }
 
-    if(phraseList.includes(phrase)) {
-      alert("Duplicated phrases are not allowed.")
-      return
-    }
-    setPhraseList([...phraseList, phrase])
+  function deletePhrase(phraseToDelete) {
+    dispatch({
+      type: DELETE_PHRASE,
+      phrase: phraseToDelete
+    })
   }
 
   return (
@@ -34,6 +38,7 @@ function App() {
         return (
           <blockquote key={index}>
             <p>{currentPhrase}</p>
+            <button onClick={() => deletePhrase(currentPhrase)}>Delete</button>
           </blockquote>
         )
       })}
